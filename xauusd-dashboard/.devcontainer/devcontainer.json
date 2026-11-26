@@ -1,0 +1,19 @@
+{
+  "name": "xauusd-dashboard (cloud dev workspace)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+  "postCreateCommand": "curl -fsSL https://supabase.com/install.sh | sh || true",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "denoland.vscode-deno",
+        "supabase.supabase-vscode"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "// NOTE": "Do not put real secrets here — this file is committed. Use Codespaces 'Secrets' settings or `supabase secrets set` instead."
+  }
+}

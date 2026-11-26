@@ -1,0 +1,4 @@
+project_id = "xauusd-dashboard"
+
+[functions.sync-exness]
+verify_jwt = false

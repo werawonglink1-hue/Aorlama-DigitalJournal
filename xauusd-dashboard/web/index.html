@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XAUUSD Live Dashboard</title>
+  <meta name="description" content="Read-only live XAUUSD trading activity dashboard." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot" id="statusDot"></span>
+      <h1>XAUUSD Live</h1>
+      <span class="badge">read-only</span>
+    </div>
+    <div class="period">
+      <label for="periodSelect">Period</label>
+      <select id="periodSelect">
+        <option value="1">Today</option>
+        <option value="7">7 days</option>
+        <option value="30" selected>30 days</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card equity">
+      <h2>Equity</h2>
+      <div class="stat-row">
+        <div class="stat"><span class="label">Balance</span><span id="statBalance" class="value">—</span></div>
+        <div class="stat"><span class="label">Equity</span><span id="statEquity" class="value">—</span></div>
+        <div class="stat"><span class="label">Unrealized P/L</span><span id="statPnl" class="value">—</span></div>
+      </div>
+      <canvas id="equityChart" width="640" height="180"></canvas>
+    </section>
+
+    <section class="card positions">
+      <h2>Open positions</h2>
+      <table>
+        <thead>
+          <tr><th>Side</th><th>Volume</th><th>Open</th><th>Current</th><th>P/L</th><th>Opened</th></tr>
+        </thead>
+        <tbody id="positionsBody">
+          <tr class="empty"><td colspan="6">No open positions</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card feed">
+      <h2>Recent activity</h2>
+      <ul id="feedList"><li class="empty">Waiting for data…</li></ul>
+    </section>
+
+    <section class="card summary">
+      <h2 id="summaryTitle">30-day results</h2>
+      <div class="stat-row">
+        <div class="stat"><span class="label">Net P/L</span><span id="summaryNet" class="value">—</span></div>
+        <div class="stat"><span class="label">Deals</span><span id="summaryCount" class="value">—</span></div>
+        <div class="stat"><span class="label">Win rate</span><span id="summaryWinRate" class="value">—</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="connectionNote">Connecting…</span>
+  </footer>
+
+  <!-- Nothing below writes to localStorage/sessionStorage/IndexedDB. All state is
+       in-memory (see app.js) and is discarded on tab close, per docs/SOP.md. -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
