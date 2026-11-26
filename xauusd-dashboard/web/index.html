@@ -3,67 +3,100 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>XAUUSD Live Dashboard</title>
+  <title>AORLAMA // XAUUSD HUD</title>
   <meta name="description" content="Read-only live XAUUSD trading activity dashboard." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="topbar">
+  <div class="scanlines"></div>
+
+  <header class="hud-top">
     <div class="brand">
-      <span class="dot" id="statusDot"></span>
-      <h1>XAUUSD Live</h1>
-      <span class="badge">read-only</span>
+      <span class="brand-mark">◈</span>
+      <span class="brand-name">AORLAMA</span>
+      <span class="brand-sub">XAUUSD // GOLD DESK</span>
     </div>
-    <div class="period">
-      <label for="periodSelect">Period</label>
-      <select id="periodSelect">
-        <option value="1">Today</option>
-        <option value="7">7 days</option>
-        <option value="30" selected>30 days</option>
-      </select>
+    <div class="hud-top-right">
+      <span id="clock" class="clock">--:--:--</span>
+      <span id="sessionTag" class="session-tag">--</span>
+      <span class="status-pill"><span id="statusDot" class="dot"></span><span id="connectionNote">connecting…</span></span>
     </div>
   </header>
 
-  <main class="grid">
-    <section class="card equity">
+  <main class="hud-grid">
+    <aside class="hud-panel gauge-panel">
       <h2>Equity</h2>
-      <div class="stat-row">
-        <div class="stat"><span class="label">Balance</span><span id="statBalance" class="value">—</span></div>
-        <div class="stat"><span class="label">Equity</span><span id="statEquity" class="value">—</span></div>
-        <div class="stat"><span class="label">Unrealized P/L</span><span id="statPnl" class="value">—</span></div>
+      <div class="gauge" id="equityGauge" style="--pct:0">
+        <div class="gauge-face">
+          <span id="statEquity" class="gauge-value">$0</span>
+          <span class="gauge-label">of balance</span>
+        </div>
       </div>
-      <canvas id="equityChart" width="640" height="180"></canvas>
-    </section>
+      <div class="mini-stats">
+        <div><span class="k">Balance</span><span id="statBalance" class="v">—</span></div>
+        <div><span class="k">Free margin</span><span id="statFreeMargin" class="v">—</span></div>
+      </div>
+      <canvas id="equityChart" width="320" height="100"></canvas>
+    </aside>
 
-    <section class="card positions">
-      <h2>Open positions</h2>
-      <table>
+    <section class="hud-panel command-panel">
+      <div class="command-head">
+        <h2>Command</h2>
+        <span class="muted">account <strong id="accountId">—</strong></span>
+      </div>
+      <div class="command-readout">
+        <div class="readout">
+          <span class="k">Unrealized P/L</span>
+          <span id="statPnl" class="v big">$0</span>
+        </div>
+        <div class="readout">
+          <span class="k">Open positions</span>
+          <span id="statOpenCount" class="v big">0</span>
+        </div>
+        <div class="readout">
+          <span class="k" id="summaryTitle">30D net</span>
+          <span id="summaryNet" class="v big">$0</span>
+        </div>
+      </div>
+
+      <table class="positions-table">
         <thead>
-          <tr><th>Side</th><th>Volume</th><th>Open</th><th>Current</th><th>P/L</th><th>Opened</th></tr>
+          <tr><th>Side</th><th>Vol</th><th>Open</th><th>Current</th><th>P/L</th><th>Opened</th></tr>
         </thead>
         <tbody id="positionsBody">
           <tr class="empty"><td colspan="6">No open positions</td></tr>
         </tbody>
       </table>
-    </section>
 
-    <section class="card feed">
-      <h2>Recent activity</h2>
-      <ul id="feedList"><li class="empty">Waiting for data…</li></ul>
-    </section>
-
-    <section class="card summary">
-      <h2 id="summaryTitle">30-day results</h2>
-      <div class="stat-row">
-        <div class="stat"><span class="label">Net P/L</span><span id="summaryNet" class="value">—</span></div>
-        <div class="stat"><span class="label">Deals</span><span id="summaryCount" class="value">—</span></div>
-        <div class="stat"><span class="label">Win rate</span><span id="summaryWinRate" class="value">—</span></div>
+      <div class="period">
+        <label for="periodSelect">Period</label>
+        <select id="periodSelect">
+          <option value="1">Today</option>
+          <option value="7">7 days</option>
+          <option value="30" selected>30 days</option>
+        </select>
+        <span class="muted"><span id="summaryCount">0</span> deals · <span id="summaryWinRate">—</span> win rate</span>
       </div>
     </section>
+
+    <aside class="hud-panel gauge-panel">
+      <h2>Open P/L</h2>
+      <div class="gauge gauge--pnl" id="pnlGauge" style="--pct:50">
+        <div class="gauge-face">
+          <span id="gaugePnlValue" class="gauge-value">$0</span>
+          <span class="gauge-label">unrealized</span>
+        </div>
+      </div>
+      <div class="mini-stats">
+        <div><span class="k">BKK time</span><span id="bkkTime" class="v">—</span></div>
+        <div><span class="k">Positions</span><span id="posCount" class="v">0</span></div>
+      </div>
+    </aside>
   </main>
 
-  <footer>
-    <span id="connectionNote">Connecting…</span>
+  <footer class="ticker-wrap">
+    <span class="ticker-label">LIVE ORDERS</span>
+    <ul id="feedList" class="ticker"><li class="empty">Waiting for data…</li></ul>
   </footer>
 
   <!-- Nothing below writes to localStorage/sessionStorage/IndexedDB. All state is
