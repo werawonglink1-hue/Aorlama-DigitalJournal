@@ -29,6 +29,11 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: xauusd-dashboard/web
+      - name: Wait for artifact to be indexed
+        # actions/deploy-pages sometimes queries the artifact API before the just-
+        # uploaded artifact is indexed, failing with "Found 0 artifact(s)" even though
+        # the upload step above succeeded. A short pause avoids the race.
+        run: sleep 15
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
