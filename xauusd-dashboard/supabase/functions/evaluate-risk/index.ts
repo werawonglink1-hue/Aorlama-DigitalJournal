@@ -9,8 +9,27 @@
 // verify_jwt is false for this function (see supabase/config.toml) so the schedule
 // doesn't need a secret embedded in a migration file; it only ever reads/writes rows
 // that are already public-readable on this dashboard.
+//
+// Optional Telegram alerting: set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID as Supabase
+// secrets (never in code/repo) to get a message on every new breach/resolution. If
+// either is unset, alerting is silently skipped — nothing else is affected.
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
+
+async function sendTelegramAlert(text: string): Promise<void> {
+  const token = Deno.env.get("TELEGRAM_BOT_TOKEN");
+  const chatId = Deno.env.get("TELEGRAM_CHAT_ID");
+  if (!token || !chatId) return; // alerting not configured yet
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
+    });
+  } catch (err) {
+    console.error("Telegram alert failed:", err);
+  }
+}
 
 interface RiskRule {
   id: string;
@@ -107,18 +126,24 @@ Deno.serve(async (_req) => {
       const isBreached = value != null && breaches(value, rule.comparator, rule.threshold);
 
       if (isBreached && !openEvent) {
+        const message = `${rule.description} (value: ${value?.toFixed(2)}, threshold: ${rule.threshold})`;
         await supabase.from("risk_events").insert({
           account_id: accountId,
           rule_id: rule.id,
           severity: rule.severity,
           metric_value: value,
-          message: `${rule.description} (value: ${value?.toFixed(2)}, threshold: ${rule.threshold})`,
+          message,
         });
+        const icon = rule.severity === "critical" ? "🔴" : rule.severity === "warning" ? "🟠" : "🔵";
+        await sendTelegramAlert(
+          `${icon} <b>${rule.severity.toUpperCase()}</b> — ${rule.label}\n${message}`,
+        );
       } else if (!isBreached && openEvent) {
         await supabase
           .from("risk_events")
           .update({ resolved_at: new Date().toISOString() })
           .eq("id", openEvent.id);
+        await sendTelegramAlert(`✅ RESOLVED — ${rule.label} is back within the normal range.`);
       }
 
       summary.push({ account_id: accountId, rule: rule.id, value, breached: isBreached });
