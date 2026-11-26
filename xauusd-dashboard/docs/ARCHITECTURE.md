@@ -32,9 +32,10 @@ Static web dashboard (web/)
 ```
 
 Nothing in this chain touches a local machine. The only two cloud services involved
-are GitHub (code + CI) and Supabase (database, secrets, compute, realtime, and static
-hosting via Supabase's own hosting or any static host the owner prefers — e.g. Vercel/
-Netlify/Cloudflare Pages, all cloud).
+are GitHub (code, CI, and static hosting via GitHub Pages — live at
+https://werawonglink1-hue.github.io/Aorlama-DigitalJournal/, deployed by
+`.github/workflows/deploy-pages.yml` on every push to `web/`) and Supabase (database,
+secrets, compute, realtime).
 
 ## Why Supabase
 
@@ -56,9 +57,33 @@ Two cloud-only options, no local cron needed:
    URL. Still cloud-only (GitHub's hosted runners), useful if finer control over retries/
    alerting is wanted later.
 
-The migration in this repo leaves the `cron.schedule(...)` call commented out until the
-project is actually provisioned (see `OPEN_QUESTIONS.md`) and the edge function is
-deployed.
+`sync-exness` isn't deployed yet (it needs real Exness credentials — see
+`OPEN_QUESTIONS.md`), so nothing is scheduled for it yet. `evaluate-risk` (below) is
+deployed and scheduled via option 1.
+
+## Agent Office (risk watch)
+
+A second, independent piece: `supabase/functions/evaluate-risk` + `web/office.html`.
+
+**Scope, by design: observe and alert only.** This never places, modifies, or closes
+an order, and never touches SL/TP — it only reads rows already in Postgres
+(`account_snapshots`, `positions`, `deals`) and writes `risk_events`. That boundary
+was a deliberate choice (not a current limitation) when this was scoped, to keep any
+account-watching agent strictly read-only, consistent with the rest of this project.
+
+- `risk_rules` (seeded by `supabase/migrations/0002_risk_office.sql`): margin level,
+  30-day drawdown, and daily realized loss, each with a warning/critical threshold.
+  Generic starting points — recalibrate once there's real trading history.
+- `evaluate-risk` runs every 5 minutes via the same pg_cron + pg_net pattern as above,
+  computes each rule's metric from existing data, and opens/resolves rows in
+  `risk_events` accordingly (one open event per breached rule at a time).
+- `web/office.html` is a public read-only page (linked from the main dashboard) showing
+  current rule status, the latest evaluation time, and alert history — no edit
+  controls, since the site has no auth layer yet.
+
+To change a threshold or add a rule, use a new migration (`insert`/`update` on
+`risk_rules`) rather than an in-app editor, until this project has an authenticated
+admin surface.
 
 ## Security notes
 

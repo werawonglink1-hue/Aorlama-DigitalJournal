@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Office // Risk Watch</title>
+  <meta name="description" content="Read-only account risk-watch center. Monitors and alerts only — never acts on the trading account." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="scanlines"></div>
+
+  <header class="hud-top">
+    <div class="brand">
+      <span class="brand-mark">◈</span>
+      <span class="brand-name">AGENT OFFICE</span>
+      <span class="brand-sub">RISK WATCH // MONITOR ONLY</span>
+    </div>
+    <div class="hud-top-right">
+      <span id="clock" class="clock">--:--:--</span>
+      <a href="./index.html" class="session-tag" style="text-decoration:none">← LIVE DASHBOARD</a>
+      <span class="status-pill"><span id="statusDot" class="dot"></span><span id="connectionNote">connecting…</span></span>
+    </div>
+  </header>
+
+  <main class="office-grid">
+    <section class="hud-panel">
+      <h2>Agent status</h2>
+      <div class="agent-status-row">
+        <div>
+          <span class="k">Role</span>
+          <span class="v">Observe &amp; alert only — no trading actions</span>
+        </div>
+        <div>
+          <span class="k">Last evaluation</span>
+          <span id="lastRun" class="v">—</span>
+        </div>
+        <div>
+          <span class="k">Overall</span>
+          <span id="overallStatus" class="v status-badge">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="hud-panel">
+      <h2>Risk rules</h2>
+      <div id="rulesGrid" class="rules-grid"></div>
+    </section>
+
+    <section class="hud-panel">
+      <h2>Alert history</h2>
+      <ul id="eventsList" class="events-list"><li class="empty">No events yet</li></ul>
+    </section>
+  </main>
+
+  <footer class="ticker-wrap">
+    <span class="ticker-label">AGENT OFFICE</span>
+    <span class="muted" style="font-size:0.75rem">
+      This page only reads data already in Supabase and never modifies the trading account.
+      See <code>docs/ARCHITECTURE.md</code> for scope.
+    </span>
+  </footer>
+
+  <script type="module" src="office.js"></script>
+</body>
+</html>

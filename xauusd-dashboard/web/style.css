@@ -156,3 +156,44 @@ tr.empty td { color: var(--muted); text-align: center; padding: 0.9rem; }
 @media (max-width: 980px) {
   .hud-grid { grid-template-columns: 1fr; }
 }
+
+/* Agent Office */
+.office-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+.agent-status-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+.agent-status-row .k { display: block; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.agent-status-row .v { display: block; font-size: 0.95rem; margin-top: 0.2rem; }
+
+.status-badge {
+  display: inline-block; padding: 0.15rem 0.6rem; border-radius: 4px;
+  font-weight: 700; letter-spacing: 0.05em; font-size: 0.8rem;
+}
+.status-badge.ok { color: var(--up); border: 1px solid var(--up); }
+.status-badge.warning { color: #ffce54; border: 1px solid #ffce54; }
+.status-badge.critical { color: var(--down); border: 1px solid var(--down); box-shadow: 0 0 10px rgba(255,77,109,0.4); }
+
+.rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+.rule-card {
+  border: 1px solid var(--panel-border); border-radius: 8px; padding: 0.75rem;
+  background: rgba(10,20,32,0.5);
+}
+.rule-card .label { font-size: 0.8rem; font-weight: 600; }
+.rule-card .desc { font-size: 0.68rem; color: var(--muted); margin: 0.3rem 0 0.5rem; line-height: 1.4; }
+.rule-card .foot { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; }
+.rule-card .value { color: var(--text); }
+
+.events-list { list-style: none; margin: 0; padding: 0; max-height: 280px; overflow-y: auto; }
+.events-list li {
+  display: flex; gap: 0.6rem; align-items: baseline;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--panel-border); font-size: 0.78rem;
+}
+.events-list li.empty { color: var(--muted); }
+.events-list .sev { font-size: 0.6rem; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 3px; flex-shrink: 0; }
+.events-list .sev.warning { color: #ffce54; border: 1px solid #ffce54; }
+.events-list .sev.critical { color: var(--down); border: 1px solid var(--down); }
+.events-list .sev.info { color: var(--cyan); border: 1px solid var(--cyan); }
+.events-list .resolved { color: var(--muted); text-decoration: line-through; }
